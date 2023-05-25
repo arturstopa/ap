@@ -1,6 +1,7 @@
 from agent import Agent, Step
 from snake_game import SnakeGame
 import numpy as np
+import tensorflow as tf
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
     MIN_REPLAY_SIZE = 1000
     TRAIN_EPISODES = 1000
     POSIBLE_ACTIONS = np.array([-1, 0, 1])
-    agent = Agent(possible_actions=POSIBLE_ACTIONS, state_shape=np.array([32, 32, 3]))
+    agent = Agent(possible_actions=POSIBLE_ACTIONS, state_shape=(32, 32, 3))
     env = SnakeGame(32, 32)
     steps_to_update_targer_model = 0
 
@@ -25,8 +26,12 @@ def main():
             if np.random.rand() < epsilon:
                 action = np.random.choice(POSIBLE_ACTIONS)
             else:
-                predicted = agent.model.predict(step.board_state).flatten()
-                action = np.argmax(predicted)
+                reshaped = step.board_state.reshape((1, 32, 32, 3))
+                predicted = agent.model.predict(reshaped, batch_size=100)
+                print(predicted)
+                action = POSIBLE_ACTIONS[np.argmax(predicted)]
+            print(f"Taking action: {action}")
+            env.print_state()
             new_board_state, reward, done, score = env.step(action)
             new_step = Step(step.board_state, reward, done, action, new_board_state)
             agent.replay_memory.append(new_step)

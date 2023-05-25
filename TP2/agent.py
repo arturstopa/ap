@@ -21,16 +21,49 @@ class Agent:
         self.state_shape = state_shape
         self.model = self.create_model()
         self.target_model = self.create_model()
+        self.target_model.set_weights(self.model.get_weights())
         self.replay_memory: deque[Step] = deque(maxlen=replay_memory_maxlen)
         # Training constants
         self.discount_factor = discount_factor
         self.batch_size = batch_size
 
-    def create_model(self) -> tf.keras.Model:
+    def create_model(self, learning_rate: float = 0.001) -> tf.keras.Model:
         # first layer input_shape = state_shape
+        model = tf.keras.Sequential()
+
+        model.add(
+            tf.keras.layers.Conv2D(
+                filters=32,
+                kernel_size=(3, 3),
+                activation="relu",
+                padding="same",
+                kernel_initializer=tf.keras.initializers.HeNormal(),
+                input_shape=(32, 32, 3),  # self.state_shape,
+            )
+        )
+        model.add(
+            tf.keras.layers.Conv2D(
+                filters=32,
+                kernel_size=(3, 3),
+                activation="relu",
+                padding="same",
+                kernel_initializer=tf.keras.initializers.HeNormal(),
+            )
+        )
+        model.add(tf.keras.layers.Flatten())
+        model.add(tf.keras.layers.Dense(128, activation="relu"))
+        model.add(tf.keras.layers.Dense(64, activation="relu"))
+        model.add(tf.keras.layers.Dense(3, activation="relu"))
+
+        model.compile(
+            loss=tf.keras.losses.Huber(),
+            optimizer=tf.keras.optimizers.Adam(lr=learning_rate),
+            metrics=["accuracy"],
+        )
+        print(model.summary())
         # last layer output_shape = action_shape
 
-        return None
+        return model
 
     def train(self):
         mini_batch = random.sample(self.replay_memory, self.batch_size)
@@ -39,6 +72,7 @@ class Agent:
         new_current_states = np.array(
             [transition.new_board_state for transition in mini_batch]
         )
+
         future_qs_list = self.target_model.predict(new_current_states)
         X, Y = list(), list()
         for index, step in enumerate(mini_batch):
@@ -52,6 +86,7 @@ class Agent:
             current_qs[step.action] = max_future_q
             X.append(step.board_state)
             Y.append(current_qs)
+
         self.model.fit(
             np.array(X),
             np.array(Y),

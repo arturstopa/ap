@@ -77,7 +77,7 @@ class SnakeGame:
     def step(self, action):
         """
         move snake/game one step
-        action can be -1 (turn left), 0 (continue), 1 (turn rignt)
+        action can be -1 (turn left), 0 (continue), 1 (turn rignt) -> THIS IS NOT TRUE, 1 IS LEFT -1 IS RIGHT
         """
         direction = int(action)
         assert -1 <= direction <= 1
@@ -172,5 +172,33 @@ class SnakeGame:
 
 # just run this if this file is the main
 if __name__ == "__main__":
-    game = SnakeGame(20, 20)
+    game = SnakeGame(11, 11)
     game.print_state()
+    print(game.get_state())
+    game.step(1)
+    game.print_state()
+    print(game.get_state())
+    game.step(0)
+    game.print_state()
+    print(game.get_state())
+    game.step(1)
+    game.print_state()
+    print(game.get_state())
+    game.step(0)
+    game.print_state()
+    print(game.get_state())
+    game.step(-1)
+    game.print_state()
+    print(game.get_state())
+    game.step(0)
+    game.print_state()
+    print(game.get_state())
+    game.step(-1)
+    game.print_state()
+    print(game.get_state())
+    game.step(0)
+    game.print_state()
+    print(game.get_state())
+    game.step(-1)
+    game.print_state()
+    print(game.get_state())

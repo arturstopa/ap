@@ -100,12 +100,12 @@ def main():
                     )
                 )
                 total_training_rewards += 1
-            if steps_to_update_target_model >= 100:
-                print(
-                    f"Copying main network weights to the target network weigs {target_model.set_weights(model.get_weights())}"
-                )
-                steps_to_update_target_model = 0
-            break
+                if steps_to_update_target_model >= 100:
+                    print(
+                        f"Copying main network weights to the target network weigs {target_model.set_weights(model.get_weights())}"
+                    )
+                    steps_to_update_target_model = 0
+                break
         epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay * episode)
     env.close()
     print("cycki dupa")
