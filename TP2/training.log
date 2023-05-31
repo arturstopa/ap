@@ -1,0 +1,5 @@
+{'episode': 20, 'Average reward on last {1000} steps': -0.8645000000000002, 'epsilon': 0.5701248020671394}
+{'episode': 40, 'Average reward on last {1000} steps': -0.8830000000000002, 'epsilon': 0.5701214426187322}
+{'episode': 60, 'Average reward on last {1000} steps': -0.9094166666666669, 'epsilon': 0.5701214425883079}
+{'episode': 80, 'Average reward on last {1000} steps': -0.9231250000000001, 'epsilon': 0.5701214425883075}
+{'episode': 100, 'Average reward on last {1000} steps': -0.9213999999999999, 'epsilon': 0.5701214425883075}
